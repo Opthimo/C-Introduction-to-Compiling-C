@@ -1,51 +1,97 @@
 <!---
 {
-  "depends_on": [],
+  "depends_on": ["https://github.com/STEMgraph/718193ef-11a1-408d-af23-4b10c24d490d", "https://github.com/STEMgraph/99787eda-617a-4a68-b9a4-d60ec5c5c303"],
   "author": "Stephan Bökelmann",
-  "first_used": "2025-03-17",
-  "keywords": ["learning", "exercises", "education", "practice"]
+  "first_used": "2025-04-02",
+  "keywords": ["C Compiler", "Assembler", "Linking", "Object Files"]
 }
 --->
 
-# Learning Through Exercises
+# C Compiler Basics
 
 ## 1) Introduction
-Learning by doing is one of the most effective methods to acquire new knowledge and skills. Rather than passively consuming information, actively engaging in problem-solving fosters deeper understanding and long-term retention. By working through structured exercises, students can grasp complex concepts in a more intuitive and applicable way. This approach is particularly beneficial in technical fields like programming, mathematics, and engineering.
+> ⚠️ We do not write the code ourselves – the compiler does that for us. We just have to make sure the compiler understands us.
+
+When we were writing assembly, a lot of thinking about data structures and the correct order of executing `system calls` was required. High-level languages such as C mitigate a subset of these problems for us.  
+Let’s be clear here: when we are talking about a programming language, we are actually talking about a program that knows how to transform a certain piece of written text into executable code. This program, a part of the workflow that produces our executable code (alongside the linker), is called the **compiler**.
+
+Historically, the compiler was a *job*. A person would read a physicist’s or mathematician’s instructions, consult the machine’s manual, and then write down the correct machine instructions so operators could carry out the calculations.
+
+Today, the compiler is just a piece of software to which we pass the path of a text file we want translated into machine code. Over the last 80 years of computer development, a sort of canonical structure has emerged that resembles how compilers actually work.
+
+The compiler starts by opening the file and copying the code into a data structure in RAM. The process of reading serialized text and transforming it into a program-specific data structure is called **parsing**. While doing that, the code goes through the first stage of compilation, called **tokenization**. Every word in the source code gets tagged with an attribute, such as `identifier`, `operator`, or `literal`.
+
+In the next step, the **syntax** is checked: do the statements, which are typically separated by a delimiter (`;` in C), form valid constructs in terms of syntactical rules? For example, without further reading, the syntax analyzer can check whether two identifiers are written next to each other without an operator. This can't produce a well-formed program, so the compilation process stops with an error.
+
+If there is no syntactical issue, the compiler proceeds to the **semantic analysis**: does this code make sense?  
+Are all operators used correctly in terms of the data types they operate on? Are all variables declared before they are used?
+
+During this process, the compiler also transforms the former linear code into a network of nodes – a graph-like structure called the **annotated syntax tree** (or AST).
+
+This graph now contains **relationships** ([mappings](https://github.com/STEMgraph/da751de6-10d3-4770-a4d3-359f08bc6631)) between different entities. A formatter then writes this tree into a new form of program: a very specific language called **intermediate representation** (IR).  
+This IR contains a lot of metadata about the code and its structure and can be interpreted by other programs similarly to how a compiler interprets C.
+
+Based on this, mathematical transformations (function mappings) can be applied to the IR.  
+Remember: the function we originally defined in our code is still the entity we’re working with.
+
+You see, not only values can be mapped onto other values — the **structure and logic of functions** can also be transformed.  
+A simple example: the function `f(x) = 3x + 5x - 10x` can be reduced to `f(x) = -2x`. Although the expression looks different, it's still **functionally equivalent**.  
+Such transformations aim to reduce the number of steps needed to calculate outputs. There are many transformations that can modify the syntax tree to generate **smaller, faster, or more efficient** programs that behave identically — as evaluated by their **observable behavior**.
+
+> 🔍 **The _as-if rule_**: The C standard explicitly states that the compiler may perform any transformations it wants, as long as the observable behavior of the program remains the same.
+
+Applying these transformations is known as **optimization**, and it’s a field of study in its own right.
+
+After several **optimization passes** over the IR, the compiler ends up with an optimized version of the syntax tree.
+
+From here, **assembly** is generated, and an assembler (like GAS in the GCC toolchain) is invoked.  
+The assembler now needs a **target triplet** to know which machine it’s generating code for (e.g., `x86_64-pc-linux-gnu`).
+
+### 1.2) Historical Context
+The first compilers were written in assembly and designed to translate languages like Fortran into machine code. John Backus and his team at IBM created one of the earliest optimizing compilers in the 1950s. Brian Kernighan and Dennis Ritchie’s work on Unix and C helped establish the modern compile/link model we still use today. 
+
+> ⚠️ Fun fact: The original C compiler was itself written in C, using a technique called *bootstrapping*. This allowed for portability and platform independence at a time when everything was deeply hardware-specific.
 
 ### 1.1) Further Readings and Other Sources
-- [The Importance of Practice in Learning](https://www.sciencedirect.com/science/article/pii/S036013151300062X)
-- "The Art of Learning" by Josh Waitzkin
-- [How to Learn Effectively: 5 Key Strategies](https://www.edutopia.org/article/5-research-backed-learning-strategies)
+- Brian W. Kernighan & Dennis M. Ritchie: *The C Programming Language*
+- [Compiler Explorer (godbolt.org)](https://godbolt.org/)
+- [What Does a Compiler Do? (YouTube)](https://www.youtube.com/watch?v=FnGCDLhaxKU)
 
 ## 2) Tasks
-1. **Write a Summary**: Summarize the concept of "learning by doing" in 3-5 sentences.
-2. **Example Identification**: List three examples from your own experience where learning through exercises helped you understand a topic better.
-3. **Create an Exercise**: Design a simple exercise for a topic of your choice that someone else could use to practice.
-4. **Follow an Exercise**: Find an online tutorial that includes exercises and complete at least two of them.
-5. **Modify an Existing Exercise**: Take a basic problem from a textbook or online course and modify it to make it slightly more challenging.
-6. **Pair Learning**: Explain a concept to a partner and guide them through an exercise without giving direct answers.
-7. **Review Mistakes**: Look at an exercise you've previously completed incorrectly. Identify why the mistake happened and how to prevent it in the future.
-8. **Time Challenge**: Set a timer for 10 minutes and try to solve as many simple exercises as possible on a given topic.
-9. **Self-Assessment**: Create a checklist to evaluate your own performance in completing exercises effectively.
-10. **Reflect on Progress**: Write a short paragraph on how this structured approach to exercises has influenced your learning.
+1. **Hello Compiler**: Write a simple C program that prints "Hello, World!" and compile it with `gcc -Wall -o hello hello.c`. Then, use `file`, `ls -l`, and `strings` to inspect the binary.
+```C
+#inlcude<stdio.h>
 
-<details>
-  <summary>Tip for Task 5</summary>
-  Try making small adjustments first, such as increasing the difficulty slightly or adding an extra constraint.
-</details>
+int main(int argc, char** argv)
+{
+  printf("Hello World\n");
+  
+  return 0;
+}
+```
+
+2. **Compiler Stages**: Use `gcc -E`, `gcc -S`, `gcc -c` and `gcc -o` to observe preprocessing, compilation, assembling, and linking.
+3. **Explore Output**: Compare the output of `gcc -S` with your own hand-written assembly.
+4. **Inline Assembly**: Insert a short inline assembly instruction (like `asm("nop");`) in your C file and recompile.
+```C
+#include <stdio.h>
+
+int main(int argc, char** argv) {
+    asm("nop");  // Inline assembler instruction
+
+    printf("Hello World\n");
+
+    return 0;
+}
+```
 
 ## 3) Questions
-1. What are the main benefits of learning through exercises compared to passive learning?
-2. How do exercises improve long-term retention?
-3. Can you think of a subject where learning through exercises might be less effective? Why?
-4. What role does feedback play in learning through exercises?
-5. How can self-designed exercises improve understanding?
-6. Why is it beneficial to review past mistakes in exercises?
-7. How does explaining a concept to someone else reinforce your own understanding?
-8. What strategies can you use to stay motivated when practicing with exercises?
-9. How can timed challenges contribute to learning efficiency?
-10. How do exercises help bridge the gap between theory and practical application?
+1. What are the four stages of compilation?
+2. How is the `.s` file generated by GCC similar or different from your own `.s` file written in GAS?
+3. Why is the `-Wall` flag recommended?
+4. What information can be extracted using the `file` command on the executable?
+5. How does the C compiler help manage hardware-specific details?
 
 ## 4) Advice
-Practice consistently and seek out diverse exercises that challenge different aspects of a topic. Combine exercises with reflection and feedback to maximize your learning efficiency. Don't hesitate to adapt exercises to fit your own needs and ensure that you're actively engaging with the material, rather than just going through the motions.
+Use `gcc -v` to trace what the compiler is doing. Don’t hesitate to use `man gcc` to explore flags and options. Experimenting with `-O1`, `-O2`, `-Og`, and `-g` helps deepen your understanding of optimization and debugging symbols.
 
