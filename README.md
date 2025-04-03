@@ -60,7 +60,7 @@ The first compilers were written in assembly and designed to translate languages
 ## 2) Tasks
 1. **Hello Compiler**: Write a simple C program that prints "Hello, World!" and compile it with `gcc -Wall -o hello hello.c`. Then, use `file`, `ls -l`, and `strings` to inspect the binary.
 ```C
-#inlcude<stdio.h>
+#include<stdio.h>
 
 int main(int argc, char** argv)
 {
